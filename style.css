@@ -1,13 +1,15 @@
 :root {
-  --primary: #4f6ef7;
-  --primary-dark: #3b56d4;
+  --primary: #2f9fe0;
+  --primary-dark: #1f7fbf;
+  --green: #57cc6a;
+  --green-dark: #3ba551;
   --danger: #e5484d;
-  --ok: #2ecc71;
-  --bg: #f4f6fb;
+  --ok: #45b862;
+  --bg: #eef8ff;
   --card: #ffffff;
-  --text: #1f2430;
-  --muted: #8a91a3;
-  --border: #e7eaf2;
+  --text: #17324a;
+  --muted: #7d93a6;
+  --border: #dcebf5;
   --radius: 14px;
 }
 
@@ -22,14 +24,41 @@ html, body {
   font-size: 15px;
 }
 
+/* 头部：天空 + 卡通地球 */
 .app-header {
-  background: linear-gradient(135deg, #4f6ef7, #7a5cf0);
-  color: #fff;
-  padding: 16px 16px 20px;
-  padding-top: calc(16px + env(safe-area-inset-top));
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: linear-gradient(135deg, #cdeeff 0%, #e6f8ff 55%, #e9fbef 100%);
+  padding: 18px 16px 22px;
+  padding-top: calc(18px + env(safe-area-inset-top));
+  border-bottom-left-radius: 24px;
+  border-bottom-right-radius: 24px;
+  box-shadow: 0 4px 14px rgba(47, 159, 224, .14);
 }
-.app-header h1 { margin: 0 0 6px; font-size: 20px; }
-.today-info { font-size: 13px; opacity: .92; }
+.earth {
+  flex: 0 0 auto;
+  width: 62px;
+  height: 62px;
+  filter: drop-shadow(0 3px 6px rgba(47, 159, 224, .35));
+  animation: spin 26s linear infinite;
+}
+@keyframes spin { from { transform: rotate(0); } to { transform: rotate(360deg); } }
+.header-text { flex: 1; min-width: 0; }
+.app-title {
+  margin: 0 0 6px;
+  font-size: 22px;
+  color: var(--text);
+  outline: none;
+  border-bottom: 2px dashed transparent;
+  padding-bottom: 2px;
+  cursor: text;
+  word-break: break-all;
+}
+.app-title:hover { border-bottom-color: #a9d8f2; }
+.app-title:focus { border-bottom-color: var(--primary); }
+.app-title:empty::before { content: "点这里改名字"; color: var(--muted); }
+.today-info { font-size: 13px; color: #4a6a82; }
 
 .tabs {
   display: flex;
@@ -64,7 +93,7 @@ main { padding: 12px; padding-bottom: calc(24px + env(safe-area-inset-bottom)); 
   background: var(--card);
   border-radius: var(--radius);
   padding: 8px;
-  box-shadow: 0 2px 8px rgba(31,36,48,.06);
+  box-shadow: 0 2px 8px rgba(23, 50, 74, .06);
 }
 .voice-btn {
   flex: 0 0 auto;
@@ -84,10 +113,12 @@ main { padding: 12px; padding-bottom: calc(24px + env(safe-area-inset-bottom)); 
   font-size: 15px;
   padding: 10px 6px;
   min-width: 0;
+  background: transparent;
+  color: var(--text);
 }
 .add-btn {
   border: none;
-  background: var(--primary);
+  background: var(--green);
   color: #fff;
   padding: 12px 16px;
   border-radius: 10px;
@@ -125,14 +156,14 @@ main { padding: 12px; padding-bottom: calc(24px + env(safe-area-inset-bottom)); 
   border-radius: 12px;
   padding: 12px;
   margin-bottom: 8px;
-  box-shadow: 0 1px 4px rgba(31,36,48,.05);
+  box-shadow: 0 1px 4px rgba(23, 50, 74, .05);
 }
 .todo-item.overdue { border-left: 4px solid var(--danger); }
 .todo-item.due-today { border-left: 4px solid #f5a623; }
 .todo-check {
   flex: 0 0 auto;
   width: 22px; height: 22px;
-  border: 2px solid #c3c9d9;
+  border: 2px solid #c3d4e0;
   border-radius: 50%;
   background: none;
   cursor: pointer;
@@ -146,15 +177,15 @@ main { padding: 12px; padding-bottom: calc(24px + env(safe-area-inset-bottom)); 
 .todo-due { font-size: 12px; color: var(--muted); margin-top: 3px; }
 .todo-item.overdue .todo-due { color: var(--danger); }
 .todo-del {
-  border: none; background: none; color: #c3c9d9; font-size: 18px; cursor: pointer; padding: 4px;
+  border: none; background: none; color: #c3d4e0; font-size: 18px; cursor: pointer; padding: 4px;
 }
 .todo-del:hover { color: var(--danger); }
 .empty { text-align: center; color: var(--muted); padding: 40px 0; font-size: 14px; }
 
 /* 课程表 */
 .hint { color: var(--muted); font-size: 12px; margin-bottom: 8px; }
-.schedule-wrap { overflow-x: auto; background: var(--card); border-radius: var(--radius); box-shadow: 0 1px 4px rgba(31,36,48,.05); }
-.schedule { border-collapse: collapse; min-width: 640px; width: 100%; }
+.schedule-wrap { overflow-x: auto; background: var(--card); border-radius: var(--radius); box-shadow: 0 1px 4px rgba(23, 50, 74, .05); }
+.schedule { border-collapse: collapse; min-width: 660px; width: 100%; }
 .schedule th, .schedule td {
   border: 1px solid var(--border);
   text-align: center;
@@ -162,11 +193,11 @@ main { padding: 12px; padding-bottom: calc(24px + env(safe-area-inset-bottom)); 
   font-size: 13px;
   vertical-align: middle;
 }
-.schedule th { background: #f0f3fb; font-weight: 600; }
-.schedule th.period-col { width: 56px; font-size: 11px; color: var(--muted); font-weight: 400; }
+.schedule th { background: #eaf6fd; font-weight: 600; }
+.schedule th.period-col { width: 74px; font-size: 10.5px; color: #4a6a82; font-weight: 500; line-height: 1.35; }
 .schedule td.cell { cursor: pointer; height: 52px; }
-.schedule td.today-col { background: #eef2ff; }
-.course-name { font-weight: 600; color: #2b3a8f; word-break: break-all; }
+.schedule td.today-col { background: #e9fbf0; }
+.course-name { font-weight: 600; color: #2b7a4b; word-break: break-all; }
 .course-loc { font-size: 11px; color: var(--muted); margin-top: 2px; }
 
 /* 倒计时 */
@@ -175,7 +206,7 @@ main { padding: 12px; padding-bottom: calc(24px + env(safe-area-inset-bottom)); 
   border-radius: var(--radius);
   padding: 14px 16px;
   margin-bottom: 12px;
-  box-shadow: 0 1px 4px rgba(31,36,48,.05);
+  box-shadow: 0 1px 4px rgba(23, 50, 74, .05);
 }
 .card h2 { margin: 0 0 10px; font-size: 16px; }
 .big-count { font-size: 15px; }
@@ -188,19 +219,20 @@ main { padding: 12px; padding-bottom: calc(24px + env(safe-area-inset-bottom)); 
 .count-list li:last-child { border-bottom: none; }
 .count-list .name { font-size: 15px; }
 .count-list .date { color: var(--muted); font-size: 12px; }
-.count-list .days { font-weight: 700; color: var(--primary); font-size: 15px; }
+.count-list .days { font-weight: 700; color: var(--green-dark); font-size: 15px; }
 .semester-config { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
 .semester-config label { font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 6px; }
 .semester-config input {
   border: 1px solid var(--border); border-radius: 8px; padding: 6px 8px; font-size: 14px;
 }
-.progress { height: 10px; background: #eef0f7; border-radius: 999px; overflow: hidden; margin: 10px 0 6px; }
-.progress > div { height: 100%; background: linear-gradient(90deg, #4f6ef7, #7a5cf0); border-radius: 999px; }
+.semester-grid { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
+.progress { height: 10px; background: #e3f0f8; border-radius: 999px; overflow: hidden; margin: 10px 0 6px; }
+.progress > div { height: 100%; background: linear-gradient(90deg, #3fa9f5, #57cc6a); border-radius: 999px; }
 
 /* 弹窗 */
 .modal {
   position: fixed; inset: 0;
-  background: rgba(20,24,35,.45);
+  background: rgba(23, 50, 74, .45);
   display: flex; align-items: center; justify-content: center;
   z-index: 20;
   padding: 20px;
@@ -225,7 +257,7 @@ main { padding: 12px; padding-bottom: calc(24px + env(safe-area-inset-bottom)); 
 /* 提示 */
 .toast {
   position: fixed; left: 50%; bottom: 40px; transform: translateX(-50%);
-  background: rgba(31,36,48,.92); color: #fff;
+  background: rgba(23, 50, 74, .92); color: #fff;
   padding: 10px 18px; border-radius: 10px; font-size: 14px;
   z-index: 30; max-width: 86vw;
 }

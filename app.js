@@ -214,7 +214,14 @@ function stopListening() {
 }
 
 /* ---------------- 课程表 ---------------- */
-const PERIOD_LABELS = ["08:00", "08:55", "10:00", "10:55", "14:00", "14:55", "16:00", "16:55"];
+// 每节 40 分钟，课间 15 分钟（相邻两节起始时间相差 55 分钟）
+const CLASS_STARTS = ["08:00", "08:55", "09:50", "10:45", "14:00", "14:55", "15:50", "16:45", "19:00", "19:55"];
+function addMin(hhmm, m) {
+  const [h, mi] = hhmm.split(":").map(Number);
+  const t = h * 60 + mi + m;
+  return pad(Math.floor(t / 60) % 24) + ":" + pad(t % 60);
+}
+const PERIOD_LABELS = CLASS_STARTS.map((s) => `${s}-${addMin(s, 40)}`);
 const DAYS = ["周一", "周二", "周三", "周四", "周五", "周六", "周日"];
 let courses = store.get("wb_courses", []);
 let editCell = null; // {day, period}
@@ -388,6 +395,30 @@ function checkDue() {
 
 /* ---------------- 事件绑定与初始化 ---------------- */
 function init() {
+  // 标题可编辑
+  const titleEl = $("#appTitle");
+  titleEl.textContent = store.get("wb_title", "我的工作台");
+  document.title = titleEl.textContent;
+  titleEl.addEventListener("click", () => {
+    titleEl.contentEditable = "true";
+    titleEl.focus();
+    const r = document.createRange();
+    r.selectNodeContents(titleEl);
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(r);
+  });
+  titleEl.addEventListener("blur", () => {
+    titleEl.contentEditable = "false";
+    const t = titleEl.textContent.replace(/\s+/g, " ").trim() || "我的工作台";
+    titleEl.textContent = t;
+    document.title = t;
+    store.set("wb_title", t);
+  });
+  titleEl.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") { e.preventDefault(); titleEl.blur(); }
+  });
+
   // Tab 切换
   $("#tabs").addEventListener("click", (e) => {
     const btn = e.target.closest(".tab");
