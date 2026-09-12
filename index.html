@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>我的工作台</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <meta name="theme-color" content="#4f6ef7">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="app-header">
+    <h1>我的工作台</h1>
+    <div class="today-info" id="todayInfo"></div>
+  </header>
+
+  <nav class="tabs" id="tabs">
+    <button class="tab active" data-tab="todo">待办</button>
+    <button class="tab" data-tab="schedule">课程表</button>
+    <button class="tab" data-tab="countdown">倒计时</button>
+  </nav>
+
+  <main>
+    <!-- 待办事项 -->
+    <section id="tab-todo" class="tab-panel active">
+      <div class="todo-input">
+        <button id="voiceBtn" class="voice-btn" title="点击语音录入">🎤</button>
+        <input id="todoText" type="text" placeholder="说：后天下午3点交数学作业">
+        <button id="addBtn" class="add-btn">添加</button>
+      </div>
+      <div id="voiceStatus" class="voice-status hidden"></div>
+      <div class="todo-filter">
+        <button class="chip active" data-filter="all">全部</button>
+        <button class="chip" data-filter="pending">未完成</button>
+        <button class="chip" data-filter="done">已完成</button>
+      </div>
+      <ul id="todoList" class="todo-list"></ul>
+    </section>
+
+    <!-- 课程表 -->
+    <section id="tab-schedule" class="tab-panel">
+      <div class="hint">点击格子编辑课程；今天所在列高亮。</div>
+      <div class="schedule-wrap" id="scheduleWrap"></div>
+    </section>
+
+    <!-- 倒计时 -->
+    <section id="tab-countdown" class="tab-panel">
+      <div class="card">
+        <h2>周末倒计时</h2>
+        <div id="weekendInfo" class="big-count"></div>
+      </div>
+      <div class="card">
+        <h2>放假倒计时</h2>
+        <ul id="holidayList" class="count-list"></ul>
+      </div>
+      <div class="card">
+        <h2>学期倒计时</h2>
+        <div class="semester-config">
+          <label>开学日期 <input type="date" id="semStart"></label>
+          <label>放假日期 <input type="date" id="semEnd"></label>
+        </div>
+        <div id="semesterInfo"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- 课程编辑弹窗 -->
+  <div id="courseModal" class="modal hidden">
+    <div class="modal-body">
+      <h3 id="courseModalTitle">编辑课程</h3>
+      <input id="courseName" class="field" placeholder="课程名，如：高等数学">
+      <input id="courseLoc" class="field" placeholder="地点（可选），如：一教201">
+      <div class="modal-actions">
+        <button id="courseClear" class="btn danger">删除</button>
+        <span class="spacer"></span>
+        <button id="courseCancel" class="btn">取消</button>
+        <button id="courseSave" class="btn primary">保存</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast hidden"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
