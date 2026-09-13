@@ -200,6 +200,16 @@ main { padding: 12px; padding-bottom: calc(24px + env(safe-area-inset-bottom)); 
 .course-name { font-weight: 600; color: #2b7a4b; word-break: break-all; }
 .course-loc { font-size: 11px; color: var(--muted); margin-top: 2px; }
 
+/* 课程时间设置 */
+.time-config { background: var(--card); border-radius: var(--radius); padding: 12px; margin-bottom: 12px; box-shadow: 0 1px 4px rgba(23,50,74,.05); }
+.time-config summary { cursor: pointer; font-size: 14px; font-weight: 600; color: var(--primary-dark); }
+.period-editor { margin: 10px 0; }
+.period-row { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; font-size: 13px; }
+.period-row .idx { width: 44px; color: var(--muted); }
+.period-row input[type="time"] { border: 1px solid var(--border); border-radius: 8px; padding: 5px 6px; font-size: 13px; color: var(--text); background: #fff; }
+.period-row .del { margin-left: auto; color: var(--danger); border: none; background: none; cursor: pointer; font-size: 16px; }
+.add-period { border: none; background: var(--primary); color: #fff; padding: 8px 12px; border-radius: 10px; font-size: 13px; cursor: pointer; }
+
 /* 倒计时 */
 .card {
   background: var(--card);

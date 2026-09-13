@@ -214,19 +214,49 @@ function stopListening() {
 }
 
 /* ---------------- 课程表 ---------------- */
-// 每节 40 分钟，课间 15 分钟（相邻两节起始时间相差 55 分钟）
-const CLASS_STARTS = ["08:00", "08:55", "09:50", "10:45", "14:00", "14:55", "15:50", "16:45", "19:00", "19:55"];
-function addMin(hhmm, m) {
-  const [h, mi] = hhmm.split(":").map(Number);
-  const t = h * 60 + mi + m;
-  return pad(Math.floor(t / 60) % 24) + ":" + pad(t % 60);
-}
-const PERIOD_LABELS = CLASS_STARTS.map((s) => `${s}-${addMin(s, 40)}`);
+// 每节默认 40 分钟、课间 15 分钟；可在“课程时间设置”里自由调整
+const DEFAULT_PERIODS = [
+  { start: "08:00", end: "08:40" }, { start: "08:55", end: "09:35" },
+  { start: "09:50", end: "10:30" }, { start: "10:45", end: "11:25" },
+  { start: "14:00", end: "14:40" }, { start: "14:55", end: "15:35" },
+  { start: "15:50", end: "16:30" }, { start: "16:45", end: "17:25" },
+  { start: "19:00", end: "19:40" }, { start: "19:55", end: "20:35" }
+];
 const DAYS = ["周一", "周二", "周三", "周四", "周五", "周六", "周日"];
+let periods = store.get("wb_periods", DEFAULT_PERIODS);
 let courses = store.get("wb_courses", []);
 let editCell = null; // {day, period}
 
 function saveCourses() { store.set("wb_courses", courses); }
+function savePeriods() { store.set("wb_periods", periods); }
+
+function renderPeriodEditor() {
+  const box = $("#periodEditor");
+  box.innerHTML = "";
+  periods.forEach((p, i) => {
+    const row = document.createElement("div");
+    row.className = "period-row";
+    row.innerHTML = `<span class="idx">第${i + 1}节</span>
+      <input type="time" value="${p.start}" data-i="${i}" data-k="start">
+      <span>-</span>
+      <input type="time" value="${p.end}" data-i="${i}" data-k="end">
+      <button class="del" data-i="${i}" title="删除">✕</button>`;
+    box.appendChild(row);
+  });
+  box.querySelectorAll("input[type=time]").forEach((inp) => {
+    inp.addEventListener("change", (e) => {
+      periods[+e.target.dataset.i][e.target.dataset.k] = e.target.value;
+      savePeriods(); renderSchedule();
+    });
+  });
+  box.querySelectorAll("button.del").forEach((b) => {
+    b.addEventListener("click", () => {
+      if (periods.length <= 1) { toast("至少保留一节"); return; }
+      periods.splice(+b.dataset.i, 1);
+      savePeriods(); renderPeriodEditor(); renderSchedule();
+    });
+  });
+}
 
 function renderSchedule() {
   const wrap = $("#scheduleWrap");
@@ -234,17 +264,17 @@ function renderSchedule() {
   let html = `<table class="schedule"><thead><tr><th class="period-col">节次</th>`;
   DAYS.forEach((d, i) => { html += `<th class="${i === todayCol ? "today-col" : ""}">${d}</th>`; });
   html += `</tr></thead><tbody>`;
-  for (let p = 0; p < PERIOD_LABELS.length; p++) {
-    html += `<tr><th class="period-col">第${p + 1}节<br>${PERIOD_LABELS[p]}</th>`;
+  periods.forEach((p, pi) => {
+    html += `<tr><th class="period-col">第${pi + 1}节<br>${p.start}-${p.end}</th>`;
     for (let d = 0; d < 7; d++) {
-      const c = courses.find((x) => x.day === d && x.period === p);
+      const c = courses.find((x) => x.day === d && x.period === pi);
       const cls = "cell" + (d === todayCol ? " today-col" : "");
-      html += `<td class="${cls}" data-day="${d}" data-period="${p}">`;
+      html += `<td class="${cls}" data-day="${d}" data-period="${pi}">`;
       if (c) html += `<div class="course-name">${escapeHtml(c.name)}</div>` + (c.loc ? `<div class="course-loc">${escapeHtml(c.loc)}</div>` : "");
       html += `</td>`;
     }
     html += `</tr>`;
-  }
+  });
   html += `</tbody></table>`;
   wrap.innerHTML = html;
   wrap.querySelectorAll("td.cell").forEach((td) => {
@@ -454,6 +484,11 @@ function init() {
   });
 
   // 课程表
+  $("#addPeriod").addEventListener("click", () => {
+    const last = periods[periods.length - 1] || { end: "20:35" };
+    periods.push({ start: last.end, end: last.end });
+    savePeriods(); renderPeriodEditor(); renderSchedule();
+  });
   $("#courseSave").addEventListener("click", saveCourse);
   $("#courseClear").addEventListener("click", clearCourse);
   $("#courseCancel").addEventListener("click", closeCourseModal);
@@ -478,6 +513,7 @@ function init() {
 
   // 渲染
   renderTodos();
+  renderPeriodEditor();
   renderSchedule();
   renderCountdowns();
   checkDue();
@@ -485,9 +521,7 @@ function init() {
 
   // PWA
   if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("./sw.js", { updateViaCache: "none" })
-      .then((reg) => reg.update())
-      .catch(() => {});
+    navigator.serviceWorker.register("./sw.js").catch(() => {});
   }
 }
 

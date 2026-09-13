@@ -55,7 +55,13 @@
 
     <!-- 课程表 -->
     <section id="tab-schedule" class="tab-panel">
-      <div class="hint">每节 40 分钟、课间 15 分钟；点击格子编辑课程，今天所在列高亮。</div>
+      <details class="time-config">
+        <summary>⚙️ 课程时间设置（可自己调每节课时间）</summary>
+        <div id="periodEditor" class="period-editor"></div>
+        <button id="addPeriod" class="add-period">+ 添加一节</button>
+        <div class="hint">改完时间后，课程表会按新时间显示。</div>
+      </details>
+      <div class="hint">点击格子编辑课程；今天所在列高亮。</div>
       <div class="schedule-wrap" id="scheduleWrap"></div>
     </section>
 
